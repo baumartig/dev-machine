@@ -1,0 +1,6 @@
+---
+    - name: owncloud repository einbinden
+      apt_repository: repo='deb http://download.opensuse.org/repositories/isv:/ownCloud:/desktop/Ubuntu_14.04/ /'
+
+    - name: owncloud installieren
+      apt: name=owncloud-client force=yes

@@ -1,0 +1,46 @@
+---
+
+    - name: Install RVM
+      shell: "curl -sSL https://get.rvm.io | bash"
+
+    - name: ensure that GPG key for RVM is installed
+      shell: "gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3"
+      args:
+        creates: ~/.gnupg/secring.gpg
+
+    - name: ensure that RVM is installed
+      shell: "curl -L get.rvm.io | bash -s stable"
+      args:
+        creates: /usr/local/rvm
+
+    - name: ensure that ruby is installed
+      command: "rvm install {{ ruby_version }}"
+      args:
+        creates: "/usr/local/rvm/gems/ruby-{{ ruby_version }}"
+
+    - name: set default version of ruby with rvm
+      command: "rvm alias create default ruby-{{ ruby_version }}"
+      args:
+        creates: /usr/local/rvm/config/alias
+
+    - name: Apt Install Gem dependencies
+      apt: name={{ item }}
+      with_items:
+        - build-essential
+        - ruby-dev
+        - libsqlite3-dev
+
+    - name: Install timetrap
+      shell: "gem install timetrap"
+
+    - name: timetrap owncloud ordner erstellen
+      file: path=/home/vagrant/timetrap state=directory owner=vagrant group=vagrant
+
+    - name: owncloud sync durchführen
+      shell: "owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap"
+
+    - name: cron job zum syncen einrichten
+      cron: name="update timetrap data" minute="1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap"
+
+    - name: kopiere timetrap config
+      copy: src=../configs/timetrap.yml dest=/home/vagrant/.timetrap.yml owner=vagrant group=vagrant

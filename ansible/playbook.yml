@@ -1,0 +1,24 @@
+- hosts: all
+  vars:
+    ruby_version: 2.3.0
+    rvm_path: /opt/rvm
+    owncloud_user: 
+    owncloud_password: 
+
+  tasks:
+
+    - name: APT UPDATE
+      apt: update_cache=yes
+
+    - name: Apt Install
+      apt: name={{ item }}
+      with_items:
+        - vim
+        - tmux
+        - htop
+        - curl
+        - gnupg2
+
+    - include: owncloud.yml
+
+    - include: timetrap.yml
