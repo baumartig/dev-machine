@@ -37,13 +37,13 @@
       shell: "gem install timetrap"
 
     - name: timetrap owncloud ordner erstellen
-      file: path=/home/vagrant/timetrap state=directory owner=vagrant group=vagrant
+      file: path={{ user_home }}/timetrap state=directory owner=vagrant group=vagrant
 
     - name: owncloud sync durchführen
-      shell: "owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap"
+      shell: "owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} {{ user_home }}/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap"
 
     - name: cron job zum syncen einrichten
-      cron: name="update timetrap data" minute="*/1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap" user=vagrant
+      cron: name="update timetrap data" minute="*/1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} {{ user_home }}/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap" user=vagrant
 
     - name: kopiere timetrap config
-      copy: src=../configs/timetrap.yml dest=/home/vagrant/.timetrap.yml owner=vagrant group=vagrant
+      copy: src=../configs/timetrap.yml dest={{ user_home }}/.timetrap.yml owner=vagrant group=vagrant
