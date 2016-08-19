@@ -2,8 +2,8 @@
   vars:
     ruby_version: 2.3.0
     rvm_path: /opt/rvm
-    owncloud_user: 
-    owncloud_password: 
+    owncloud_user: "empty"
+    owncloud_password: "empty"
 
   tasks:
 
@@ -13,12 +13,22 @@
     - name: Apt Install
       apt: name={{ item }}
       with_items:
-        - vim
+        - git
         - tmux
         - htop
         - curl
         - gnupg2
 
-    - include: owncloud.yml
 
-    - include: timetrap.yml
+
+    - include: nvim.yml
+
+    - name: Clone the config repository
+      git: repo=https://github.com/baumartig/configs.git dest=/home/vagrant/.baumartig-configs
+      become: yes
+      become_user: vagrant
+
+    - name: Execute the config init script
+      command: /home/vagrant/.baumartig-configs/init.sh
+      become: yes
+      become_user: vagrant

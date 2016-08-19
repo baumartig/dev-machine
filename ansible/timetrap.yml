@@ -13,6 +13,9 @@
       args:
         creates: /usr/local/rvm
 
+    - name: add user to the rvm group
+      user: name=vagrant groups=rvm append=yes
+
     - name: ensure that ruby is installed
       command: "rvm install {{ ruby_version }}"
       args:
