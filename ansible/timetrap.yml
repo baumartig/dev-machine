@@ -43,7 +43,7 @@
       shell: "owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap"
 
     - name: cron job zum syncen einrichten
-      cron: name="update timetrap data" minute="1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap" user=vagrant
+      cron: name="update timetrap data" minute="*/1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap" user=vagrant
 
     - name: kopiere timetrap config
       copy: src=../configs/timetrap.yml dest=/home/vagrant/.timetrap.yml owner=vagrant group=vagrant

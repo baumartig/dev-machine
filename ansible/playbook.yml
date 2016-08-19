@@ -19,7 +19,9 @@
         - curl
         - gnupg2
 
+    - include: owncloud.yml
 
+    - include: timetrap.yml
 
     - include: nvim.yml
 
