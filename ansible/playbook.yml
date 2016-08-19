@@ -12,6 +12,16 @@
     - name: APT UPDATE
       apt: update_cache=yes
 
+    - name: Set timezone variables
+      copy: content='Europe/Berlin'
+            dest=/etc/timezone
+            owner=root
+            group=root
+            mode=0644
+            backup=yes
+      notify:
+        - update timezone
+
     - name: Apt Install
       apt: name={{ item }}
       with_items:
@@ -36,6 +46,12 @@
     - name: Set zsh as default shell
       lineinfile: "dest=/etc/passwd regexp='{{ user }}' line='{{ user }}:x:1000:1000::/home/{{ user }}:/bin/zsh'"
 
+    - name: owncloud sync für ssh durchführen
+      shell: "owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} /home/vagrant/.ssh https://baumartig.de/owncloud/remote.php/webdav/Arbeit/ssh"
+
+    - name: cron job zum syncen einrichten
+      cron: name="update ssh data" minute="*/1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} {{ user_home }}/.ssh https://baumartig.de/owncloud/remote.php/webdav/Arbeit/ssh" user={{ user }}
+
     - name: Clone the config repository
       git: repo=https://github.com/baumartig/configs.git dest={{ user_home }}/.baumartig-configs accept_hostkey=yes update=no
       become: yes
@@ -47,3 +63,7 @@
         chdir: "{{ user_home }}/.baumartig-configs/"
       become: yes
       become_user: "{{ user }}"
+
+  handlers:
+    - name: update timezone
+      command: dpkg-reconfigure --frontend noninteractive tzdata
