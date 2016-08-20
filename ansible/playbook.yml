@@ -28,11 +28,11 @@
     - include: nvim.yml
 
     - name: Clone the config repository
-      git: repo=https://github.com/baumartig/configs.git dest={{ user_home }}/.baumartig-configs
+      git: repo=https://github.com/baumartig/configs.git dest={{ user_home }}/.baumartig-configs accept_hostkey=yes update=no
       become: yes
       become_user: vagrant
 
     - name: Execute the config init script
-      command: {{ user_home }}/.baumartig-configs/init.sh
+      shell: "{{ user_home }}/.baumartig-configs/init.sh"
       become: yes
       become_user: vagrant

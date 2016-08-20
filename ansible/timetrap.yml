@@ -16,13 +16,13 @@
     - name: add user to the rvm group
       user: name=vagrant groups=rvm append=yes
 
-    - name: ensure that ruby is installed
-      command: "rvm install {{ ruby_version }}"
+    - name: install ruby
+      shell: "/usr/local/rvm/bin/rvm install {{ ruby_version }}"
       args:
-        creates: "/usr/local/rvm/gems/ruby-{{ ruby_version }}"
+        creates: "/usr/local/rvm/rubies/ruby-{{ ruby_version }}/bin/ruby"
 
     - name: set default version of ruby with rvm
-      command: "rvm alias create default ruby-{{ ruby_version }}"
+      shell: "/usr/local/rvm/bin/rvm alias create default ruby-{{ ruby_version }}"
       args:
         creates: /usr/local/rvm/config/alias
 
@@ -46,4 +46,4 @@
       cron: name="update timetrap data" minute="*/1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} {{ user_home }}/timetrap https://baumartig.de/owncloud/remote.php/webdav/Arbeit/timetrap" user=vagrant
 
     - name: kopiere timetrap config
-      copy: src=../configs/timetrap.yml dest={{ user_home }}/.timetrap.yml owner=vagrant group=vagrant
+      template: src=../configs/timetrap.j2 dest={{ user_home }}/.timetrap.yml owner=vagrant group=vagrant
