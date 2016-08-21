@@ -20,6 +20,7 @@
         - htop
         - curl
         - gnupg2
+        - zsh
 
     - include: owncloud.yml
 
@@ -27,12 +28,22 @@
 
     - include: nvim.yml
 
+    - name: Install oh-my-zsh
+      git: repo=git://github.com/robbyrussell/oh-my-zsh.git dest={{ user_home }}/.oh-my-zsh accept_hostkey=yes
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Set zsh as default shell
+      lineinfile: "dest=/etc/passwd regexp='{{ user }}' line='{{ user }}:x:1000:1000::/home/{{ user }}:/bin/zsh'"
+
     - name: Clone the config repository
       git: repo=https://github.com/baumartig/configs.git dest={{ user_home }}/.baumartig-configs accept_hostkey=yes update=no
       become: yes
-      become_user: vagrant
+      become_user: "{{ user }}"
 
     - name: Execute the config init script
       shell: "{{ user_home }}/.baumartig-configs/init.sh"
+      args:
+        chdir: "{{ user_home }}/.baumartig-configs/"
       become: yes
-      become_user: vagrant
+      become_user: "{{ user }}"

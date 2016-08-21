@@ -6,3 +6,13 @@
 
     - name: neovim installieren
       apt: name=neovim
+
+    - name: create nvim config folder
+      file: path="{{ user_home }}/.config/nvim/autoload" state=directory
+      become: yes
+      become_user: "{{ user }}"
+
+    - name: Plug installieren
+      get_url: url=https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim dest="{{ user_home }}/.config/nvim/autoload/plug.vim"
+      become: yes
+      become_user: "{{ user }}"
