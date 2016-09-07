@@ -49,10 +49,10 @@
       lineinfile: "dest=/etc/passwd regexp='{{ user }}' line='{{ user }}:x:1000:1000::/home/{{ user }}:/bin/zsh'"
 
     - name: owncloud sync für ssh durchführen
-      shell: "owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} {{ user_home }}/.ssh https://baumartig.de/owncloud/remote.php/webdav/Arbeit/ssh"
+      shell: "owncloudcmd --user {{ owncloud_user }} --password "{{ owncloud_password }}" {{ user_home }}/.ssh https://baumartig.de/owncloud/remote.php/webdav/Arbeit/ssh"
 
     - name: cron job zum syncen einrichten
-      cron: name="update ssh data" minute="*/1" job="owncloudcmd --user {{ owncloud_user }} --password {{ owncloud_password }} {{ user_home }}/.ssh https://baumartig.de/owncloud/remote.php/webdav/Arbeit/ssh" user={{ user }}
+      cron: name="update ssh data" minute="*/1" job="owncloudcmd --user {{ owncloud_user }} --password "{{ owncloud_password }}" {{ user_home }}/.ssh https://baumartig.de/owncloud/remote.php/webdav/Arbeit/ssh" user={{ user }}
 
     - name: Clone the config repository
       git: repo=https://github.com/baumartig/configs.git dest={{ user_home }}/.baumartig-configs accept_hostkey=yes update=no
